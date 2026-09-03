@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ blog.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a class="brand" href="/">Blog App</a>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          {% if current_user %}
+            <a href="/blogs/new">Create Blog</a>
+            <a href="/logout">Logout</a>
+          {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <main class="container" style="max-width: 800px;">
+      <article class="card blog-list">
+        <h1>{{ blog.title }}</h1>
+        <div class="blog-meta">
+          {{ blog.created_at.strftime('%Y-%m-%d') if blog.created_at else 'Recently' }}
+        </div>
+        <p>{{ blog.content if blog.content else 'No content provided.' }}</p>
+
+        {% if current_user and current_user.id == blog.author_id %}
+          <div class="actions">
+            <a class="small-link" href="/blogs/{{ blog.id }}/edit">Edit</a>
+            <form action="/blogs/{{ blog.id }}/delete" method="post" class="inline-form">
+              <button type="submit" class="danger-btn">Delete</button>
+            </form>
+          </div>
+        {% endif %}
+      </article>
+    </main>
+  </body>
+</html>
